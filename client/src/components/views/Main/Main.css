@@ -1,0 +1,16 @@
+.Main {
+    font-family: sans-serif;
+    text-align: center;
+  }
+  .map-selected {
+    fill: #ffdc00;
+  }
+  
+  .map-unselected {
+    fill: #39cccc;
+  }
+  
+  .map-selected:hover,
+  .map-unselected:hover {
+    cursor: pointer;
+  }
