@@ -7,6 +7,7 @@ import {Col, Row} from 'antd'
 import Meta from 'antd/lib/card/Meta';
 import Axios from 'axios'
 import ImageSlider from '../../utils/ImageSlider'
+import SearchFeature from '../Imageinfo/Sections/SearchFeature'
 
 import "antd/dist/antd.min.css";
 
@@ -93,15 +94,21 @@ function Detailpage(props) {
 
   const renderCards  = Info.map((info,index) => {
     // console.log('image.images', images.images)
-
+    console.log(info)
+    // console.log(info)
     let image_url = JSON.parse(info.images)
     // console.log("imageurl",image_url)
     // console.log(image_url[0])
+    let liked_string = (info.liked).toString()
+
+
     return (
       // {<img src = {`http://localhost:5000/${image_url[0]}`}
     <Col lg = {6} md = {8} xs = {24} key = {index}>
-    <Card cover = {<ImageSlider multiimages = {image_url}/>}>
-      <Meta title = {info.title}/>
+    <Card cover = {<a href = {`/${id}/${info.picture_idx}`}><ImageSlider multiimages = {image_url}/></a>}>
+      <Meta title = {info.title} description = {liked_string}/>
+      {/* <Meta liked = {info.liked}/> */}
+
     </Card>
     </Col>
 
@@ -132,10 +139,11 @@ function Detailpage(props) {
           <div style={{ textAlign: 'center' }}>
             <h2>Let's Travel {continent} <RocketOutlined type="rocket" /> </h2>
           </div>
-          
+          <SearchFeature/>
           <Row gutter = {[16,16]}>
             {renderCards}
           </Row>
+          
           
           {PostSize >= Limit &&
           <div style = {{justifyContent: 'center'}}>

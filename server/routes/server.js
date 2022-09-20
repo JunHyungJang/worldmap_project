@@ -6,6 +6,7 @@ const util = require('util');
 const bodyParser = require('body-parser');
 const { resolveNaptr } = require('dns');
 const { isReadable } = require('stream');
+const { dequeue } = require('jquery');
 
 
 
@@ -150,14 +151,14 @@ router.post('/detail', (req,res) => {
 
     const continent_id = Continents[continent]
     console.log(continent_id)
-    const sql1 = `SELECT a.writer, a.title, a.description, 
-    a.images, a.continents, a.star, a.views, b.user_name from pictures
+    const sql1 = `SELECT a.picture_idx, a.writer, a.title, a.description, 
+    a.images, a.continents, a.liked, a.views, b.user_name from pictures
      AS a LEFT JOIN user_inform AS b ON a.writer = b.user_id
      WHERE continents = ?
      ORDER BY a.title LIMIT ? OFFSET ?`
     db.query(sql1, [continent_id,limit,offset] ,(err,data) => {
         if(err) {
-            return res.stataus(400).json({success: false, err})
+            return res.status(400).json({success: false, err})
         }
         else {
             return res.status(200).json({success: true, data})
@@ -165,6 +166,101 @@ router.post('/detail', (req,res) => {
     })
 })
 
+router.get('/detail/info', (req,res) => {
+    // console.log(req.query.id)
+    let id = req.query.id
+
+    // const sql1 = `SELECT * from pictures WHERE picture_idx = ?`
+    const sql1 = `SELECT a.picture_idx, a.writer, a.title, a.description, 
+    a.images, a.continents, a.liked, a.views, b.user_name from pictures
+     AS a LEFT JOIN user_inform AS b ON a.writer = b.user_id where picture_idx = ?`
+    db.query(sql1,[id], (err,data) => {
+        // console.log(data)
+        if(err){
+            return res.status(400).send(err)
+        }
+        else {
+            return res.status(200).send({success: true, data})
+        }
+    })
+})
+
+// router.post('/like', (req,res) => {
+//     console.log("first like")
+//     let user_id = 'jsy3535@dgist.ac.kr'
+//     let picture_idx = 4;
+
+//     const sql1 = `SELECT COUNT(*) AS result FROM liked 
+//     WHERE user_idx = ? and picture_idx = ?`
+//     console.log("like")
+//     db.query(sql1, [user_id, picture_idx], (err,data) => {
+//         if(err) {
+//             return res.status(400).send(err)
+//         }
+//         else {
+//             return res.status(200).send({success: true,data})
+//         }
+//     })
+// })
+
+router.post('/like', (req,res) => {
+    // console.log("first like")
+    let user_id = req.query.user_id
+    let picture_idx = req.query.picture_idx
+
+    const sql1 = `SELECT COUNT(*) AS result FROM liked 
+    WHERE user_id = ? and picture_idx = ?`
+    // console.log("like")
+    db.query(sql1, [user_id, picture_idx], (err,data) => {
+        // console.log(data[0].result)
+        // liked 안한 경우
+        if(data[0].result < 1){
+            // return res.status(400).send({success: true})
+            console.log("like 안한경우")
+            const sql2 = `INSERT into liked (user_id,picture_idx) VALUES (?,?)`
+            db.query(sql2, [user_id,picture_idx], (err, data) => {
+                if (!err) {
+                    console.log("inserted")
+                    const sql4 = `UPDATE pictures set liked = liked + 1 WHERE picture_idx = ?`
+                    db.query(sql4, [picture_idx], (err,data) => {
+                        if(err) {
+                            return res.status(400).send({success: 'total liked plus is false'})
+                        }
+                    })
+                    return res.status(200).send({success: 'inserted'})
+                    
+                }
+                else {
+                    return res.send(err)
+                    
+                }
+            })
+        }
+        else {
+            console.log("like 한경우")
+            // return res.status(200).send({success: false})
+            const sql3 = `DELETE FROM liked WHERE user_id = ? AND picture_idx = ?`
+            db.query(sql3, [user_id,picture_idx], (err,data) => {
+                if (!err) {
+                    console.log("deleted")
+                    const sql5 = `UPDATE pictures set liked = liked -1 WHERE picture_idx = ?`
+                    db.query(sql5, [picture_idx], (err,data) => {
+                        if(err){
+                            return res.status(400).send({success: 'total liked minus is false '})
+                        }
+                    })
+                    return res.status(200).send({success: 'deleted'})
+                }
+                else {
+                    console.log("delete 에러")
+                    return res.send(err)
+                }
+            })
+        }
+    })
+
+    
+})
 
 
 

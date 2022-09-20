@@ -9,6 +9,7 @@ import RegisterPage from './components/views/RegisterPage/RegisterPage'
 import Worldmap from './components/views/Worldmap/Worldmap'
 import UploadImage from './components/views/UploadImage/UploadImage'
 import Detailpage from './components/views/Detailpage/Detailpage'
+import Imageinfo from './components/views/Imageinfo/Imageinfo'
 
 import "antd/dist/antd.min.css";
 import { data } from 'jquery'
@@ -41,6 +42,8 @@ function App() {
         <Route exact path = "/title" element = {<Title isLogin = {isLogin}/>}/>
         <Route exact path = "/upload" element = {<UploadImage/>}/>
         <Route exact path = '/:id' element = {<Detailpage />}/>
+        <Route exact path = '/:id/:picture_idx' element = {<Imageinfo />}/>
+
 
 
 
