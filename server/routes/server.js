@@ -145,25 +145,52 @@ router.post('/detail', (req,res) => {
         'Oceania':6,
     }
     const continent = req.query.continent;
-   let limit = req.query.limit ? parseInt(req.query.limit) : 20;
-   let offset = req.query.offset ? parseInt(req.query.offset) : 0;
-//    console.log(limit, offset)
-
+    let limit = req.query.limit ? parseInt(req.query.limit) : 20;
+    let offset = req.query.offset ? parseInt(req.query.offset) : 0;
+    let searchterm = req.query.SearchTerm;
     const continent_id = Continents[continent]
-    console.log(continent_id)
-    const sql1 = `SELECT a.picture_idx, a.writer, a.title, a.description, 
-    a.images, a.continents, a.liked, a.views, b.user_name from pictures
-     AS a LEFT JOIN user_inform AS b ON a.writer = b.user_id
-     WHERE continents = ?
-     ORDER BY a.title LIMIT ? OFFSET ?`
-    db.query(sql1, [continent_id,limit,offset] ,(err,data) => {
-        if(err) {
-            return res.status(400).json({success: false, err})
-        }
-        else {
-            return res.status(200).json({success: true, data})
-        }
-    })
+
+    // console.log("Detail")
+    if (searchterm) {
+        console.log("searchterm")
+        console.log(searchterm)
+        const sql2 = `SELECT a.picture_idx, a.writer, a.title, a.description, 
+        a.images, a.continents, a.liked, a.views, b.user_name from pictures
+        AS a LEFT JOIN user_inform AS b ON a.writer = b.user_id
+        WHERE continents = ? and a.description like "%${searchterm}%"
+        ORDER BY a.title LIMIT ? OFFSET ?`
+        db.query(sql2, [continent_id,limit,offset] ,(err,data) => {
+            if(err) {
+                console.log('err')
+                return res.status(400).json({success: false, err})
+            }
+            else {
+                console.log("success")
+                console.log(data)
+                return res.status(200).json({success: true, data})
+            }
+        })
+
+    }
+    else 
+    {
+        const sql1 = `SELECT a.picture_idx, a.writer, a.title, a.description, 
+        a.images, a.continents, a.liked, a.views, b.user_name from pictures
+        AS a LEFT JOIN user_inform AS b ON a.writer = b.user_id
+        WHERE continents = ?
+        ORDER BY a.title LIMIT ? OFFSET ?`
+        db.query(sql1, [continent_id,limit,offset] ,(err,data) => {
+            if(err) {
+                return res.status(400).json({success: false, err})
+            }
+            else {
+                // console.log(data)
+                return res.status(200).json({success: true, data})
+            }
+        })
+
+    }
+    
 })
 
 router.get('/detail/info', (req,res) => {
@@ -216,11 +243,11 @@ router.post('/like', (req,res) => {
         // liked 안한 경우
         if(data[0].result < 1){
             // return res.status(400).send({success: true})
-            console.log("like 안한경우")
+            // console.log("like 안한경우")
             const sql2 = `INSERT into liked (user_id,picture_idx) VALUES (?,?)`
             db.query(sql2, [user_id,picture_idx], (err, data) => {
                 if (!err) {
-                    console.log("inserted")
+                    // console.log("inserted")
                     const sql4 = `UPDATE pictures set liked = liked + 1 WHERE picture_idx = ?`
                     db.query(sql4, [picture_idx], (err,data) => {
                         if(err) {
@@ -237,12 +264,12 @@ router.post('/like', (req,res) => {
             })
         }
         else {
-            console.log("like 한경우")
+            // console.log("like 한경우")
             // return res.status(200).send({success: false})
             const sql3 = `DELETE FROM liked WHERE user_id = ? AND picture_idx = ?`
             db.query(sql3, [user_id,picture_idx], (err,data) => {
                 if (!err) {
-                    console.log("deleted")
+                    // console.log("deleted")
                     const sql5 = `UPDATE pictures set liked = liked -1 WHERE picture_idx = ?`
                     db.query(sql5, [picture_idx], (err,data) => {
                         if(err){
@@ -252,7 +279,7 @@ router.post('/like', (req,res) => {
                     return res.status(200).send({success: 'deleted'})
                 }
                 else {
-                    console.log("delete 에러")
+                    // console.log("delete 에러")
                     return res.send(err)
                 }
             })

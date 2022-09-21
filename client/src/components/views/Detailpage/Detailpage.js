@@ -18,6 +18,7 @@ function Detailpage(props) {
     const [Limit, setLimit] = useState(8)
     const [Offset, setOffset] = useState(0)
     const [PostSize, setPostSize] = useState(0)
+    const [SearchTerm, setSearchTerm] = useState("")
 
     const {id} = useParams();
 
@@ -62,7 +63,8 @@ function Detailpage(props) {
       params : {
         'continent' : continent,
         'offset' : body.offset,
-        'limit': body.limit
+        'limit': body.limit,
+        'SearchTerm' : body.SearchTerm
         
       }
     })
@@ -94,7 +96,7 @@ function Detailpage(props) {
 
   const renderCards  = Info.map((info,index) => {
     // console.log('image.images', images.images)
-    console.log(info)
+    // console.log(info)
     // console.log(info)
     let image_url = JSON.parse(info.images)
     // console.log("imageurl",image_url)
@@ -129,6 +131,21 @@ function Detailpage(props) {
     setOffset(new_offset)
   }
 
+  const updateSearchTerm = (newSearchTerm) => {
+    setSearchTerm(newSearchTerm)
+
+    let body = {
+      'limit' : Limit,
+      'offset' : Offset,
+      'SearchTerm' : newSearchTerm
+    }
+
+    setOffset(0)
+    setSearchTerm(newSearchTerm)
+    getImages(body)
+
+    
+  }
   
   
     
@@ -139,7 +156,11 @@ function Detailpage(props) {
           <div style={{ textAlign: 'center' }}>
             <h2>Let's Travel {continent} <RocketOutlined type="rocket" /> </h2>
           </div>
-          <SearchFeature/>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '1rem auto' }}>
+                <SearchFeature
+                    refreshFunction={updateSearchTerm}
+                />
+            </div>
           <Row gutter = {[16,16]}>
             {renderCards}
           </Row>

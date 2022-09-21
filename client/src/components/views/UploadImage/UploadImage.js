@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Typography, Button, Form, Input } from 'antd';
 import Fileupload from '../../utils/Fileupload';
 import Axios from 'axios';
@@ -8,7 +8,14 @@ const { Title} = Typography;
  
 
 function UploadImage() {
-   
+    
+
+    useEffect( () => {
+        if(sessionStorage.getItem('user_id') == null) {
+            alert("로그인을 한 후에 사용하실수 있는 기능입니다")
+            document.location.href = "/"
+        }
+    })
     const Continents = [
         { key: 1, value: "Africa" },
         { key: 2, value: "Europe" },
