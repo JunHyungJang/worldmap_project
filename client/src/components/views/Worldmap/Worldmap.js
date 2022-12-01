@@ -30,7 +30,7 @@ function Worldmap() {
           Go travel!
         </Button>
         </div>
-        {Selected}
+      
         </div>
   )
 }

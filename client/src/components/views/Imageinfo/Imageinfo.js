@@ -53,7 +53,7 @@ function Imageinfo(props) {
 
         <Row gutter={[16, 16]} >
             <Col lg={12} sm={24}>
-                ProductImage
+             
                 <ProductImage detail={Imageinfo} />
             </Col>
             <Col lg={12} sm={24}>

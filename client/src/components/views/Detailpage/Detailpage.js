@@ -1,7 +1,7 @@
 import React, { useEffect} from 'react'
 import { useState } from 'react'
 import {useParams} from 'react-router-dom'
-import {RocketOutlined} from '@ant-design/icons'
+import {RocketOutlined,HeartOutlined,HeartFilled} from '@ant-design/icons'
 import {Card} from 'antd'
 import {Col, Row} from 'antd'
 import Meta from 'antd/lib/card/Meta';
@@ -10,6 +10,7 @@ import ImageSlider from '../../utils/ImageSlider'
 import SearchFeature from '../Imageinfo/Sections/SearchFeature'
 
 import "antd/dist/antd.min.css";
+// import { Flex } from 'react-flex'
 
 
 function Detailpage(props) {
@@ -56,7 +57,7 @@ function Detailpage(props) {
       getImages(body)
       
   }, [])
-
+  // process.env.REACT_APP_DB_HOST + '/api/test'
   const getImages = (body) => {
       
     Axios.post('/api/detail',null, {
@@ -108,10 +109,16 @@ function Detailpage(props) {
       // {<img src = {`http://localhost:5000/${image_url[0]}`}
     <Col lg = {6} md = {8} xs = {24} key = {index}>
     <Card cover = {<a href = {`/${id}/${info.picture_idx}`}><ImageSlider multiimages = {image_url}/></a>}>
-      <Meta title = {info.title} description = {liked_string}/>
+      <Meta title = {info.title}>
+      {/* <HeartOutlined/> */}
+      </Meta>
       {/* <Meta liked = {info.liked}/> */}
-
     </Card>
+    <div style = {{display: 'flex',  flexDirection: 'row'}}>
+    <HeartFilled style = {{color : 'red'}}/>
+    {info.liked}
+    </div>
+
     </Col>
 
     )

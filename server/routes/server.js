@@ -11,7 +11,7 @@ const { dequeue } = require('jquery');
 
 
 router.get('/test', (req,res) => {
-    db.query(`SELECT * FROM mytable`, (err,data) => {
+    db.query(`SELECT * FROM board`, (err,data) => {
         if(!err) res.send({products: data});
         else res.send(err)
     })
@@ -289,6 +289,34 @@ router.post('/like', (req,res) => {
     
 })
 
+router.post('/checklike',(req,res) => {
+    let user_id = req.query.user_id;
+    let picture_idx = req.query.picture_idx;
+
+    const sql1 = `SELECT COUNT(*) AS result FROM liked 
+    WHERE user_id = ? and picture_idx = ?`
+
+    db.query(sql1, [user_id,picture_idx], (err,data) => {
+        //like 안한경우
+        if(data[0].result <1){
+            return res.send({success: false})
+        }
+        else{
+            return res.send({success: true})
+        }
+    })
+})
+
+router.post('/plusview', (req,res) => {
+    let picture_idx = req.query.picture_idx;
+
+    const sql1 = `UPDATE pictures SET views = views + 1 where picture_idx = ?`
+    db.query(sql1, [picture_idx], (err,data) => {
+        if(!err) {
+            return res.send({success: true})
+        }
+    })
+})
 
 
 module.exports = router;

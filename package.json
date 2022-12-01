@@ -7,7 +7,8 @@
     "front": "npm run start --prefix client",
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "nodemon ./server/index.js",
-    "dev": "concurrently \"npm run server\" \"npm run start --prefix client\""
+    "dev": "concurrently \"npm run server\" \"npm run start --prefix client\"",
+    "build": "react-scripts build"
   },
   "author": "",
   "license": "ISC",
@@ -37,6 +38,8 @@
   "devDependencies": {
     "@ant-design/icons": "^4.7.0",
     "concurrently": "^7.3.0",
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.19",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
   }
 }
