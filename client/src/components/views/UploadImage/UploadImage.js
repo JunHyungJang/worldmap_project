@@ -71,11 +71,11 @@ function UploadImage() {
         .then(response => {
             console.log("abcde",response)
             if (response.data.success) {
-                alert("상품이 업로드 되었습니다.")
+                alert("사진이 업로드 되었습니다.")
                 document.location.href = "/"
             }
             else {
-                alert("상품 업로드에 실패했습니다.")
+                alert("사진 업로드에 실패했습니다.")
                 
             }
         })

@@ -39,7 +39,9 @@ function RegisterPage() {
         })
         .then(res => {
             console.log(res)
+            alert("회원가입 완료 되었습니다.")
         })
+        window.location.replace("/");
 
 
     }

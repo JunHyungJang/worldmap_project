@@ -25,7 +25,7 @@ router.post('/register', (req,res)=> {
     console.log(user_name, user_id, user_pw)
 
     const sql1 = `INSERT INTO user_inform (user_id, user_pw,user_name,user_email) VALUES (?,?,?,?)`
-
+    
 
     db.query(sql1,[user_id, user_pw, user_name, user_id], (err,data) => {
         if(!err) {
@@ -116,10 +116,10 @@ router.post('/saveimages', (req,res) => {
     // console.log(req.query.images)
     const writer = req.query.writer
     const title = req.query.title
-    const description = req.query.title
+    const description = req.query.description
     const images = JSON.stringify(req.query.images)
     const continents = req.query.continents
-
+    console.log(description)
     console.log(images)
 
     const sql1 = `INSERT INTO pictures (writer, title, description, images, continents) VALUES (?,?,?,?,?)`
@@ -157,8 +157,8 @@ router.post('/detail', (req,res) => {
         const sql2 = `SELECT a.picture_idx, a.writer, a.title, a.description, 
         a.images, a.continents, a.liked, a.views, b.user_name from pictures
         AS a LEFT JOIN user_inform AS b ON a.writer = b.user_id
-        WHERE continents = ? and a.description like "%${searchterm}%"
-        ORDER BY a.title LIMIT ? OFFSET ?`
+        WHERE continents = ? and a.title like "%${searchterm}%"
+        ORDER BY a.views desc LIMIT ? OFFSET ?`
         db.query(sql2, [continent_id,limit,offset] ,(err,data) => {
             if(err) {
                 console.log('err')
@@ -178,7 +178,7 @@ router.post('/detail', (req,res) => {
         a.images, a.continents, a.liked, a.views, b.user_name from pictures
         AS a LEFT JOIN user_inform AS b ON a.writer = b.user_id
         WHERE continents = ?
-        ORDER BY a.title LIMIT ? OFFSET ?`
+        ORDER BY a.views desc LIMIT ? OFFSET ?`
         db.query(sql1, [continent_id,limit,offset] ,(err,data) => {
             if(err) {
                 return res.status(400).json({success: false, err})
