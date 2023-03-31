@@ -8,7 +8,9 @@ const { resolveNaptr } = require('dns');
 const { isReadable } = require('stream');
 const { dequeue } = require('jquery');
 
-
+router.get('/', (req,res) => {
+    res.send("helloworld")
+})
 
 router.get('/test', (req,res) => {
     db.query(`SELECT * FROM board`, (err,data) => {
@@ -41,7 +43,7 @@ router.post('/register', (req,res)=> {
 
 router.post('/login', (req,res) => {
     // console.log(`= = = > req : ${util.inspect(req)}`)
-
+    console.log("login")
     const user_id = req.query.user_id;
     const user_pw = req.query.user_pw;
     console.log(user_id, user_pw)
@@ -104,8 +106,10 @@ router.post('/uploadimage', (req,res) => {
     console.log("uploadimage")
     upload(req,res, err => {
         if(err){
-            return req.json({success: false, err})
+            console.log(err)
+            return res.json({success: false, err})
         }
+        
         return res.json({success: true, filePath:res.req.file.path, fileName: res.req.file.filename})
     })
 
@@ -135,7 +139,7 @@ router.post('/saveimages', (req,res) => {
 })
 
 router.post('/detail', (req,res) => {
-    
+    console.log('detail')
     const Continents = {
         'Africa' : 1,
         'Europe' : 2,

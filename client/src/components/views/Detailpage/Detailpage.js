@@ -59,8 +59,8 @@ function Detailpage(props) {
   }, [])
   // process.env.REACT_APP_DB_HOST + '/api/test'
   const getImages = (body) => {
-      
-    Axios.post('/api/detail',null, {
+    console.log()
+    Axios.post("http://localhost:5000/api/detail",null, {
       params : {
         'continent' : continent,
         'offset' : body.offset,
